@@ -1,0 +1,106 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Forcine — Filmes, Séries e Animes</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#101010;color:white;font-family:Arial,sans-serif}
+header{padding:20px 6%;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #292929}
+.logo{font-size:30px;font-weight:bold;color:#e50914}
+button{border:0;border-radius:6px;padding:12px 18px;cursor:pointer;font-weight:bold}
+.primary{background:#e50914;color:white}
+nav{display:flex;gap:10px;flex-wrap:wrap}
+nav button{background:transparent;color:#ddd}
+.hero{padding:65px 6%;background:linear-gradient(90deg,#180909,#101010 75%);min-height:250px}
+.hero h1{font-size:clamp(32px,5vw,56px);margin:0 0 15px}
+.hero p{color:#ccc;max-width:550px;line-height:1.6}
+section{padding:20px 6%}
+h2{font-size:22px}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(135px,1fr));gap:16px}
+.card{background:#202020;border-radius:9px;overflow:hidden}
+.poster{height:155px;display:flex;align-items:center;justify-content:center;background:linear-gradient(145deg,#482020,#171717);font-size:42px}
+.card p{padding:0 10px;font-weight:bold}
+.muted{color:#aaa;font-size:14px}
+.overlay{display:none;position:fixed;inset:0;background:#000d;align-items:center;justify-content:center;padding:20px}
+.panel{background:#202020;padding:28px;border-radius:12px;width:100%;max-width:390px}
+.panel input{width:100%;padding:13px;margin:8px 0;background:#111;border:1px solid #444;color:white;border-radius:6px}
+.panel button{width:100%;margin-top:10px}
+.close{float:right;background:#333;color:white}
+footer{padding:30px;text-align:center;color:#888}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">FORCINE</div>
+  <nav>
+    <button onclick="showCategory('Todos')">Início</button>
+    <button onclick="showCategory('Filmes')">Filmes</button>
+    <button onclick="showCategory('Séries')">Séries</button>
+    <button onclick="showCategory('Animes')">Animes</button>
+    <button class="primary" onclick="openAuth('login')">Entrar</button>
+  </nav>
+</header>
+<div class="hero">
+  <h1>Seu próximo universo começa aqui.</h1>
+  <p>Explore filmes, séries e animes em um só lugar. Crie sua conta para conhecer o Forcine.</p>
+  <button class="primary" onclick="openAuth('register')">Criar minha conta</button>
+</div>
+<section>
+  <h2 id="categoryTitle">Explore o catálogo</h2>
+  <p class="muted">Prévia do catálogo — os conteúdos serão adicionados pelo administrador.</p>
+  <div class="cards" id="catalog"></div>
+</section>
+<footer>FORCINE · Filmes, séries e animes</footer>
+<div class="overlay" id="auth">
+  <div class="panel">
+    <button class="close" onclick="closeAuth()">Fechar</button>
+    <h2 id="authTitle">Entrar no Forcine</h2>
+    <form id="authForm">
+      <input id="name" placeholder="Seu nome" autocomplete="name" hidden>
+      <input id="email" type="email" placeholder="Seu e-mail" autocomplete="email" required>
+      <input id="password" type="password" placeholder="Senha (mínimo 8 caracteres)" minlength="8" autocomplete="current-password" required>
+      <button class="primary" id="submitBtn" type="submit">Entrar</button>
+    </form>
+    <p id="authMessage" class="muted" aria-live="polite"></p>
+    <button onclick="switchAuth()" id="switchBtn">Ainda não tem conta? Cadastre-se</button>
+  </div>
+</div>
+<script>
+const items=[
+ {title:"Filmes",cat:"Filmes",emoji:"🎬"},
+ {title:"Séries",cat:"Séries",emoji:"📺"},
+ {title:"Animes",cat:"Animes",emoji:"🎌"}
+];
+function showCategory(cat){
+ document.getElementById('categoryTitle').textContent=cat==='Todos'?'Explore o catálogo':cat;
+ const list=cat==='Todos'?items:items.filter(x=>x.cat===cat);
+ document.getElementById('catalog').innerHTML=list.map(x=>
+ `<article class="card"><div class="poster">${x.emoji}</div><p>${x.title}</p></article>`
+ ).join('');
+}
+let mode='login';
+function openAuth(m){mode=m;updateAuth();document.getElementById('auth').style.display='flex'}
+function closeAuth(){document.getElementById('auth').style.display='none'}
+function switchAuth(){mode=mode==='login'?'register':'login';updateAuth()}
+function updateAuth(){
+ const reg=mode==='register';
+ document.getElementById('authTitle').textContent=reg?'Criar conta':'Entrar no Forcine';
+ document.getElementById('name').hidden=!reg;
+ document.getElementById('name').required=reg;
+ document.getElementById('password').autocomplete=reg?'new-password':'current-password';
+ document.getElementById('submitBtn').textContent=reg?'Cadastrar':'Entrar';
+ document.getElementById('switchBtn').textContent=reg?'Já tem conta? Entrar':'Ainda não tem conta? Cadastre-se';
+ document.getElementById('authMessage').textContent='';
+}
+document.getElementById('authForm').addEventListener('submit',e=>{
+ e.preventDefault();
+ document.getElementById('authMessage').textContent=
+ 'Interface pronta. O cadastro real será ativado quando conectarmos o Supabase.';
+});
+showCategory('Todos');
+</script>
+</body>
+</html>
